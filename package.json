@@ -1,0 +1,34 @@
+{
+  "name": "webauth-viem-mm",
+  "version": "1.0.0",
+  "description": "WebAuthn + Viem + MetaMask Smart Account Demo",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@metamask/delegation-toolkit": "^0.12.0",
+    "@privy-io/react-auth": "^2.21.2",
+    "buffer": "^6.0.3",
+    "process": "^0.11.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0",
+    "superstruct": "^1.0.3",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^4.4.0"
+  },
+  "resolutions": {
+    "superstruct": "^1.0.3"
+  },
+  "overrides": {
+    "superstruct": "^1.0.3"
+  }
+}
