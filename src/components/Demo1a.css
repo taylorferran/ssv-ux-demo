@@ -493,6 +493,127 @@
   color: #3b82f6;
 }
 
+/* Parallel Processing Status */
+.parallel-status {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.parallel-status h5 {
+  margin-bottom: 1rem;
+  color: #667eea;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.parallel-chains {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.chain-status {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.chain-status.processing {
+  border-color: rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.05);
+}
+
+.chain-status.completed {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.chain-status.error {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.chain-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.chain-icon {
+  font-size: 1.2rem;
+}
+
+.chain-name {
+  font-weight: 600;
+  color: #ffffff;
+  flex: 1;
+  margin-left: 0.5rem;
+}
+
+.status-indicator {
+  font-size: 1.1rem;
+}
+
+.status-indicator.processing {
+  animation: pulse 1.5s infinite;
+}
+
+.status-message {
+  font-size: 0.9rem;
+  color: #b0b0b0;
+  line-height: 1.4;
+}
+
+.chain-status.processing .status-message {
+  color: #fbbf24;
+}
+
+.chain-status.completed .status-message {
+  color: #22c55e;
+}
+
+.chain-status.error .status-message {
+  color: #ef4444;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .parallel-chains {
+    grid-template-columns: 1fr;
+  }
+  
+  .chain-status {
+    padding: 0.75rem;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .demo-content {

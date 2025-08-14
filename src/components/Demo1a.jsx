@@ -16,6 +16,10 @@ const Demo1a = () => {
     baseSepoliaCalls: false,
     multiChainCalls: false
   })
+  const [parallelStatus, setParallelStatus] = useState({
+    sepolia: { status: 'idle', message: '' },
+    baseSepolia: { status: 'idle', message: '' }
+  })
   const [logs, setLogs] = useState([])
   const [results, setResults] = useState(null)
 
@@ -76,17 +80,72 @@ const Demo1a = () => {
 
   const handleSendMultiChainCalls = async () => {
     setLoading(prev => ({ ...prev, multiChainCalls: true }))
+    
+    // Reset parallel status
+    setParallelStatus({
+      sepolia: { status: 'idle', message: '' },
+      baseSepolia: { status: 'idle', message: '' }
+    })
+    
     try {
       addLog('🚀 Starting multi-chain sendCalls demo...', 'info')
-      addLog('⚡ Will send batched calls on both Sepolia and Base Sepolia', 'info')
+      addLog('⚡ Signing sequentially, then processing in parallel...', 'info')
+      
+      // Step 1: Show Sepolia signing
+      setParallelStatus(prev => ({
+        ...prev,
+        sepolia: { status: 'processing', message: '🔄 Switching to Sepolia and signing...' }
+      }))
+      addLog('📝 Step 1: Signing Sepolia transaction...', 'info')
+      
+      // Small delay to show the UI update
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      // Step 2: Show Base Sepolia signing (after Sepolia is signed)
+      setTimeout(() => {
+        setParallelStatus(prev => ({
+          ...prev,
+          sepolia: { status: 'processing', message: '⏳ Sepolia signed, now processing...' },
+          baseSepolia: { status: 'processing', message: '🔄 Switching to Base Sepolia and signing...' }
+        }))
+        addLog('📝 Step 2: Signing Base Sepolia transaction...', 'info')
+      }, 2000) // Show after a bit to simulate the sequential signing
+      
+      // Step 3: Show both processing
+      setTimeout(() => {
+        setParallelStatus({
+          sepolia: { status: 'processing', message: '⏳ Processing Sepolia calls...' },
+          baseSepolia: { status: 'processing', message: '⏳ Processing Base Sepolia calls...' }
+        })
+        addLog('⚡ Step 3: Both transactions signed, processing in parallel...', 'info')
+      }, 4000)
+      
+      // Execute the actual multi-chain calls
       const operationResults = await sendCallsManager.sendMultiChainCalls()
+      
+      // Update final status
+      setParallelStatus({
+        sepolia: { 
+          status: 'completed', 
+          message: `✅ Completed ${operationResults.sepolia.callCount} calls (${operationResults.sepolia.status.status})` 
+        },
+        baseSepolia: { 
+          status: 'completed', 
+          message: `✅ Completed ${operationResults.baseSepolia.callCount} calls (${operationResults.baseSepolia.status.status})` 
+        }
+      })
+      
       setResults(operationResults)
       updateState()
       addLog('🎉 Multi-chain sendCalls completed successfully!', 'success')
-      addLog(`📊 Sepolia: ${operationResults.sepolia.callCount} calls`, 'success')
-      addLog(`📊 Base Sepolia: ${operationResults.baseSepolia.callCount} calls`, 'success')
+      addLog(`📊 Total: ${operationResults.totalCalls} calls across ${operationResults.totalChains} chains`, 'success')
     } catch (error) {
       addLog(`❌ Failed to send multi-chain calls: ${error.message}`, 'error')
+      // Update status to show error
+      setParallelStatus(prev => ({
+        sepolia: { ...prev.sepolia, status: prev.sepolia.status === 'idle' ? 'idle' : 'error', message: prev.sepolia.status === 'idle' ? '' : '❌ Failed' },
+        baseSepolia: { ...prev.baseSepolia, status: prev.baseSepolia.status === 'idle' ? 'idle' : 'error', message: prev.baseSepolia.status === 'idle' ? '' : '❌ Failed' }
+      }))
     } finally {
       setLoading(prev => ({ ...prev, multiChainCalls: false }))
     }
@@ -97,6 +156,10 @@ const Demo1a = () => {
     updateState()
     setLogs([])
     setResults(null)
+    setParallelStatus({
+      sepolia: { status: 'idle', message: '' },
+      baseSepolia: { status: 'idle', message: '' }
+    })
     addLog('🔄 Demo state reset', 'info')
   }
 
@@ -198,8 +261,48 @@ const Demo1a = () => {
                 onClick={handleSendMultiChainCalls}
                 disabled={loading.multiChainCalls || !state.isConnected}
               >
-                {loading.multiChainCalls ? '⏳ Sending Multi-Chain Calls...' : '🚀 Send Multi-Chain Calls'}
+                {loading.multiChainCalls ? '⚡ Processing Multi-Chain Calls...' : '🚀 Send Multi-Chain Calls'}
               </button>
+              
+              {/* Parallel Processing Status */}
+              {loading.multiChainCalls && (
+                <div className="parallel-status">
+                  <h5>⚡ Multi-Chain Processing Status</h5>
+                  <div className="parallel-chains">
+                    <div className={`chain-status ${parallelStatus.sepolia.status}`}>
+                      <div className="chain-header">
+                        <span className="chain-icon">🔵</span>
+                        <span className="chain-name">Sepolia</span>
+                        <span className={`status-indicator ${parallelStatus.sepolia.status}`}>
+                          {parallelStatus.sepolia.status === 'processing' && '⏳'}
+                          {parallelStatus.sepolia.status === 'completed' && '✅'}
+                          {parallelStatus.sepolia.status === 'error' && '❌'}
+                          {parallelStatus.sepolia.status === 'idle' && '⏸️'}
+                        </span>
+                      </div>
+                      <div className="status-message">
+                        {parallelStatus.sepolia.message || 'Waiting...'}
+                      </div>
+                    </div>
+                    
+                    <div className={`chain-status ${parallelStatus.baseSepolia.status}`}>
+                      <div className="chain-header">
+                        <span className="chain-icon">🔵</span>
+                        <span className="chain-name">Base Sepolia</span>
+                        <span className={`status-indicator ${parallelStatus.baseSepolia.status}`}>
+                          {parallelStatus.baseSepolia.status === 'processing' && '⏳'}
+                          {parallelStatus.baseSepolia.status === 'completed' && '✅'}
+                          {parallelStatus.baseSepolia.status === 'error' && '❌'}
+                          {parallelStatus.baseSepolia.status === 'idle' && '⏸️'}
+                        </span>
+                      </div>
+                      <div className="status-message">
+                        {parallelStatus.baseSepolia.message || 'Waiting...'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="individual-buttons">
                 <button

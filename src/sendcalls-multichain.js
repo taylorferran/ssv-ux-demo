@@ -218,7 +218,7 @@ class SendCallsMultiChainManager {
     }
   }
 
-  // Send calls on both chains
+  // Send calls on both chains - sign sequentially, process in parallel
   async sendMultiChainCalls() {
     if (!this.walletClient || !this.isConnected) {
       throw new Error('Wallet not connected. Connect first.')
@@ -227,28 +227,92 @@ class SendCallsMultiChainManager {
     try {
       console.log("🚀 Starting multi-chain sendCalls demo...")
       console.log("📋 This will send batched calls on both Sepolia and Base Sepolia")
+      console.log("⚡ Signing sequentially, then processing in parallel...")
       
-      // Send calls on Sepolia first
-      console.log("\n=== SEPOLIA CALLS ===")
-      const sepoliaResult = await this.sendSepoliaCalls()
+      // Step 1: Sign Sepolia calls
+      console.log("\n=== STEP 1: SIGNING SEPOLIA CALLS ===")
+      await this.switchChain('sepolia')
+      console.log("📤 Sending calls on Sepolia...")
       
-      // Send calls on Base Sepolia
-      console.log("\n=== BASE SEPOLIA CALLS ===")
-      const baseSepoliaResult = await this.sendBaseSepoliaCalls()
+      const sepoliaCallResult = await this.walletClient.sendCalls({
+        chain: sepolia,
+        account: this.connectedAccount,
+        calls: [
+          {
+            data: "0xdeadbeef",
+            to: "0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC",
+          },
+          {
+            data: "0xdeadbeef", 
+            to: "0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC",
+          },
+          {
+            data: "0xdeadbeef",
+            to: "0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC",
+          },
+        ],
+      })
+      
+      console.log("✅ Sepolia calls signed, ID:", sepoliaCallResult.id)
+      
+      // Step 2: Sign Base Sepolia calls (don't wait for Sepolia to process)
+      console.log("\n=== STEP 2: SIGNING BASE SEPOLIA CALLS ===")
+      await this.switchChain('baseSepolia')
+      console.log("📤 Sending calls on Base Sepolia...")
+      
+      const baseSepoliaCallResult = await this.walletClient.sendCalls({
+        chain: baseSepolia,
+        account: this.connectedAccount,
+        calls: [
+          {
+            data: "0xdeadbeef",
+            to: "0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC",
+          },
+          {
+            data: "0xdeadbeef",
+            to: "0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC",
+          },
+        ],
+      })
+      
+      console.log("✅ Base Sepolia calls signed, ID:", baseSepoliaCallResult.id)
+      
+      // Step 3: Watch both statuses in parallel
+      console.log("\n=== STEP 3: WATCHING BOTH CHAINS IN PARALLEL ===")
+      console.log("⏳ Both transactions signed, now watching status in parallel...")
+      
+      const [sepoliaStatus, baseSepoliaStatus] = await Promise.all([
+        this.watchStatus(sepoliaCallResult.id, "Sepolia"),
+        this.watchStatus(baseSepoliaCallResult.id, "Base Sepolia")
+      ])
       
       const results = {
-        sepolia: sepoliaResult,
-        baseSepolia: baseSepoliaResult,
+        sepolia: {
+          id: sepoliaCallResult.id,
+          chain: "Sepolia",
+          chainId: sepolia.id,
+          callCount: 3,
+          status: sepoliaStatus,
+          explorer: "https://sepolia.etherscan.io"
+        },
+        baseSepolia: {
+          id: baseSepoliaCallResult.id,
+          chain: "Base Sepolia",
+          chainId: baseSepolia.id,
+          callCount: 2,
+          status: baseSepoliaStatus,
+          explorer: "https://sepolia-explorer.base.org"
+        },
         totalChains: 2,
-        totalCalls: sepoliaResult.callCount + baseSepoliaResult.callCount
+        totalCalls: 5
       }
       
       this.callResults = results
       
       console.log("🎉 Multi-chain sendCalls completed!")
       console.log("📊 Summary:")
-      console.log(`- Sepolia: ${sepoliaResult.callCount} calls, Status: ${sepoliaResult.status.status}`)
-      console.log(`- Base Sepolia: ${baseSepoliaResult.callCount} calls, Status: ${baseSepoliaResult.status.status}`)
+      console.log(`- Sepolia: ${results.sepolia.callCount} calls, Status: ${results.sepolia.status.status}`)
+      console.log(`- Base Sepolia: ${results.baseSepolia.callCount} calls, Status: ${results.baseSepolia.status.status}`)
       
       return results
     } catch (error) {
