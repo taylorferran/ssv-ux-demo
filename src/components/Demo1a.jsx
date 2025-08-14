@@ -213,7 +213,7 @@ const Demo1a = () => {
             <div className="eip5792-info">
               <h4>🔗 EIP-5792 Features</h4>
               <ul>
-                <li>🎯 Native wallet call batching</li>
+                <li>🎯 Transaction batching</li>
                 <li>🌐 Multi-chain support</li>
                 <li>📊 Status tracking</li>
                 <li>⚡ Automatic chain switching</li>
@@ -248,7 +248,7 @@ const Demo1a = () => {
                 <div className="sendcalls-benefits">
                   <p><strong>✨ EIP-5792 Benefits:</strong></p>
                   <ul>
-                    <li>🎯 Native wallet batching (no smart accounts needed)</li>
+                    <li>🎯 Transaction batching with smart accounts</li>
                     <li>🔄 Automatic chain switching</li>
                     <li>📊 Built-in status tracking</li>
                     <li>⚡ Optimized for multi-chain UX</li>
