@@ -185,7 +185,7 @@ const Demo26Inner = () => {
           <Link to="/" className="back-button">
             ← Back to Demos
           </Link>
-          <h1 className="demo-title">Demo 2.6: Privy Email Auth + Multi-Chain MetaMask Smart Accounts</h1>
+          <h1 className="demo-title">Demo 2.2: Privy Email Auth + Multi-Chain MetaMask Smart Accounts</h1>
           <p className="demo-description">
             Login with Privy (email authentication) and create MetaMask smart accounts owned by your Privy EOA. 
           </p>
@@ -297,6 +297,14 @@ const Demo26Inner = () => {
                   <h4>4. Send User Operations</h4>
                   <p>Send user operations through smart accounts on individual chains or both simultaneously</p>
                   
+                  <button
+                    className="btn btn-primary btn-large"
+                    onClick={handleSendBothUserOps}
+                    disabled={loading.bothUserOps || !state.hasSmartAccounts}
+                  >
+                    {loading.bothUserOps ? '⏳ Signing Both Sequentially...' : '🚀 Send on BOTH Chains (Sequential Signing)'}
+                  </button>
+                  
                   <div className="button-group">
                     <button
                       className="btn btn-secondary"
@@ -312,14 +320,6 @@ const Demo26Inner = () => {
                       disabled={loading.baseSepoliaUserOp || !state.hasSmartAccounts}
                     >
                       {loading.baseSepoliaUserOp ? '⏳ Sending...' : '📤 Base Sepolia Only'}
-                    </button>
-                    
-                    <button
-                      className="btn btn-accent btn-large"
-                      onClick={handleSendBothUserOps}
-                      disabled={loading.bothUserOps || !state.hasSmartAccounts}
-                    >
-                      {loading.bothUserOps ? '⏳ Sending Both...' : '🚀 Send Both Chains'}
                     </button>
                   </div>
                   

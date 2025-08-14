@@ -137,6 +137,9 @@ class MetaMaskBatchingManager {
       const gasPrices = await this.getGasPrices()
       
       console.log("📦 Encoding calls with chain IDs...")
+      console.log("🌐 Call 1: Sepolia (11155111) → 0x1234...7890 (0.00001 ETH)")
+      console.log("🌐 Call 2: Base Sepolia (84532) → 0x5678...1234 (0.00002 ETH)")
+      console.log("🌐 Call 3: No chain ID → Zero address")
       console.log(`⛽ Using gas prices - maxFee: ${gasPrices.maxFeePerGas.toString()} wei, maxPriority: ${gasPrices.maxPriorityFeePerGas.toString()} wei`)
       
       // Encode multiple calls into a single batch
@@ -148,8 +151,8 @@ class MetaMaskBatchingManager {
           data: "0x"
         },
         {
-          chain: "11155111", // Sepolia chain ID
-          to: "0x5678901234567890123456789012345678901234",
+          chain: "84532", // Base Sepolia chain ID
+          to: "0x5678901234567890123456789012345678901234", // Base Sepolia destination
           value: parseEther("0.00002"),
           data: "0x"
         },

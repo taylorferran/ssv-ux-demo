@@ -58,15 +58,15 @@ const Demo2b = () => {
   const handleSendBatchedOperation = async () => {
     setLoading(prev => ({ ...prev, batchOperation: true }))
     try {
-      addLog('📦 Starting batched user operation...', 'info')
-      addLog('⚡ All transactions will be executed in a single user operation', 'info')
+      addLog('🔗 Starting chain ID encoding demo...', 'info')
+      addLog('⚡ Encoding calls with chain IDs for potential cross-chain execution', 'info')
       const operationResult = await batchingManager.sendBatchedUserOperation()
       setResult(operationResult)
-      addLog('🎉 Batched user operation completed successfully!', 'success')
+      addLog('🎉 Chain ID encoding completed successfully!', 'success')
       addLog(`📋 Transaction Hash: ${operationResult.transactionHash}`, 'success')
       addLog(`⛽ Gas Used: ${operationResult.gasUsed.toString()}`, 'success')
     } catch (error) {
-      addLog(`❌ Failed to send batched user operation: ${error.message}`, 'error')
+      addLog(`❌ Failed to encode calls with chain IDs: ${error.message}`, 'error')
     } finally {
       setLoading(prev => ({ ...prev, batchOperation: false }))
     }
@@ -91,10 +91,10 @@ const Demo2b = () => {
           <Link to="/" className="back-button">
             ← Back to Demos
           </Link>
-          <h1 className="demo-title">Demo 2b: MetaMask + Batched Transactions</h1>
+          <h1 className="demo-title">Demo 2b: Chain ID Encoding in User Operations</h1>
           <p className="demo-description">
-            Connect MetaMask, create a smart account, and send multiple transactions 
-            in a single user operation on Sepolia
+            Demonstrate encoding multiple calls with chain IDs into a single user operation. 
+            This showcases how calls can specify target chains for potential use with custom bundlers.
           </p>
         </header>
 
@@ -161,20 +161,21 @@ const Demo2b = () => {
             </div>
 
             <div className="action-step">
-              <h4>3. Send Batched Transactions</h4>
+              <h4>3. Encode Calls with Chain IDs</h4>
               <div className="batch-info">
-                <h5>📦 Batch Details:</h5>
+                <h5>🔗 Encoded Call Details:</h5>
                 <ul>
-                  <li><strong>Transaction 1:</strong> Send 0.00001 ETH to 0x1234...7890</li>
-                  <li><strong>Transaction 2:</strong> Send 0.00002 ETH to 0x5678...1234</li>
-                  <li><strong>Transaction 3:</strong> Call to zero address (no-op)</li>
+                  <li><strong>Call 1:</strong> Chain ID 11155111 (Sepolia) → 0x1234...7890 (0.00001 ETH)</li>
+                  <li><strong>Call 2:</strong> Chain ID 84532 (Base Sepolia) → 0x5678...1234 (0.00002 ETH)</li>
+                  <li><strong>Call 3:</strong> No chain ID → Zero address (fallback)</li>
                 </ul>
                 <div className="batch-benefits">
-                  <p><strong>✨ Benefits:</strong></p>
+                  <p><strong>🚀 Chain ID Encoding Benefits:</strong></p>
                   <ul>
-                    <li>🔥 Single gas fee for all transactions</li>
-                    <li>⚡ Atomic execution (all succeed or all fail)</li>
-                    <li>🎯 One signature for multiple operations</li>
+                    <li>🌐 Specify target chain for each call</li>
+                    <li>🔧 Enables custom bundler implementations</li>
+                    <li>⚡ Future cross-chain execution potential</li>
+                    <li>📦 All encoded in single user operation</li>
                   </ul>
                 </div>
               </div>
@@ -184,7 +185,7 @@ const Demo2b = () => {
                 onClick={handleSendBatchedOperation}
                 disabled={loading.batchOperation || !state.hasSmartAccount}
               >
-                {loading.batchOperation ? '⏳ Batching Transactions...' : '📦 Send Batched User Operation'}
+                {loading.batchOperation ? '⏳ Encoding & Sending...' : '🔗 Encode Chain IDs & Send Batch'}
               </button>
             </div>
 
@@ -198,12 +199,12 @@ const Demo2b = () => {
           {/* Result Panel */}
           {result && (
             <div className="result-panel">
-              <h3>Batch Operation Result</h3>
+              <h3>Chain ID Encoding Result</h3>
               <div className="result-card">
                 <div className="result-header">
-                  <h4>✅ Successful Batch Execution</h4>
+                  <h4>✅ Successfully Encoded Chain IDs</h4>
                   <div className="batch-stats">
-                    <span className="stat">📦 {result.batchSize} Transactions</span>
+                    <span className="stat">🔗 {result.batchSize} Calls Encoded</span>
                     <span className="stat">⛽ {result.gasUsed.toString()} Gas Used</span>
                     <span className="stat">🏠 {result.chain}</span>
                   </div>

@@ -149,7 +149,7 @@ const Demo25 = () => {
           <Link to="/" className="back-button">
             ← Back to Demos
           </Link>
-          <h1 className="demo-title">Demo 2.5: WebAuthn + Multi-Chain MetaMask Smart Account</h1>
+          <h1 className="demo-title">Demo 2.1: WebAuthn + Multi-Chain MetaMask Smart Account</h1>
           <p className="demo-description">
             Create WebAuthn passkeys, generate MetaMask smart accounts on Sepolia and Base Sepolia, 
             and send user operations with sequential signing across both chains.

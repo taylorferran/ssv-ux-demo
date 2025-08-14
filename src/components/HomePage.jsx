@@ -21,7 +21,7 @@ const HomePage = () => {
     {
       id: '2b',
       title: 'Demo 2b',
-      description: 'MetaMask + Batched Transactions in Single User Operation',
+      description: 'Chain ID Encoding in User Operations for Custom Bundlers',
       path: '/demo-2b',
       status: 'active'
     },
